@@ -916,7 +916,8 @@ OUTPUT_DIR = args.output_dir or "Output"
 OUTPUT_FILENAME = args.output_filename or "Snapshot.csv"
 if not ".csv" in OUTPUT_FILENAME: OUTPUT_FILENAME = f"{OUTPUT_FILENAME}.csv"
 
-EXCLUDE = [ ex.lower() for ex in EXCLUDE ]
+EXCLUDE = list(map(str, EXCLUDE.split(",")))
+EXCLUDE = [ ex.strip().lower() for ex in EXCLUDE ]
 
 tiers = list(map(int, TIERS.split(",")))
 tier_limits = list(map(int, TIER_LIMITS.split(",")))
@@ -1117,6 +1118,7 @@ for pool in pools:
     # ------------------------------------------------------------------
 
     contract_owner = getContractOwner(checkAddress(pool_contract), API_ENDPOINT, API_KEY).strip().lower()
+    if not contract_owner in EXCLUDE: EXCLUDE.append(contract_owner)
 
     DF_POOL_TXN_HISTORY = pd.read_csv(txn_export_file, dtype='unicode')[["blockNumber", "timeStamp", "from", "to", "value"]]
 
@@ -1124,7 +1126,6 @@ for pool in pools:
     DF_POOL_TXN_HISTORY["to"] = DF_POOL_TXN_HISTORY["to"].str.lower()
 
     DF_POOL_TXN_HISTORY = DF_POOL_TXN_HISTORY[
-        (DF_POOL_TXN_HISTORY["from"] != contract_owner) &
         (~DF_POOL_TXN_HISTORY["from"].isin(EXCLUDE)) &
         (~DF_POOL_TXN_HISTORY["to"].isin(EXCLUDE))
     ]
