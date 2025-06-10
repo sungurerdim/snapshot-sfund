@@ -1,6 +1,6 @@
-natsort==8.4.0
-pandas==2.0.3
-psutil==5.9.5
-python-dotenv==1.0.0
-Requests==2.31.0
-web3==6.6.1
+natsort
+pandas
+psutil
+python-dotenv
+Requests
+web3
